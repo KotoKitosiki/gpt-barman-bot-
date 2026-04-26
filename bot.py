@@ -50,7 +50,8 @@ async def main():
 
     from handlers.menu import router as menu_router
     dp.include_router(menu_router)
-
+from handlers.messages import router as messages_router
+    dp.include_router(messages_router)
     # Запуск через вебхук на Render или polling локально
     if RENDER_EXTERNAL_URL:
         app = web.Application()
