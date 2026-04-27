@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, BigInteger, Text, Float
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, BigInteger, Text
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
 
@@ -16,10 +16,9 @@ class User(Base):
     daily_requests_count = Column(Integer, default=0)
     last_request_date = Column(DateTime, default=datetime.utcnow)
     registered_at = Column(DateTime, default=datetime.utcnow)
-    # Реферальная система
-    referrer_id = Column(BigInteger, nullable=True)  # Кто пригласил
-    referral_count = Column(Integer, default=0)  # Сколько друзей привёл
-    referral_link = Column(String, nullable=True)  # Его личная ссылка
+    referrer_id = Column(BigInteger, nullable=True)
+    referral_count = Column(Integer, default=0)
+    referral_link = Column(String, nullable=True)
 
 class RecipeLog(Base):
     __tablename__ = "recipe_logs"
@@ -45,7 +44,7 @@ class Partner(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     description = Column(String, nullable=True)
-    category = Column(String, nullable=True)  # flowers, alcohol, kids, food
+    category = Column(String, nullable=True)
     referral_url = Column(String, nullable=False)
     promo_code = Column(String, nullable=True)
     active = Column(Boolean, default=True)
