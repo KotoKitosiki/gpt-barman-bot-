@@ -8,11 +8,9 @@ import os
 from config import settings
 from database.core import init_db
 
-# Настройка логирования
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Переменные окружения для вебхука
 RENDER_EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL", "")
 
 async def set_commands(bot: Bot):
@@ -29,7 +27,6 @@ async def on_startup(bot: Bot):
     await init_db()
     logger.info("Database initialized")
     await set_commands(bot)
-    # Устанавливаем вебхук
     if RENDER_EXTERNAL_URL:
         webhook_url = f"{RENDER_EXTERNAL_URL}/webhook"
         await bot.set_webhook(webhook_url)
@@ -44,7 +41,6 @@ async def main():
     bot = Bot(token=settings.BOT_TOKEN)
     dp = Dispatcher()
 
-    # Импорт и регистрация роутеров
     from handlers.start import router as start_router
     dp.include_router(start_router)
 
@@ -54,7 +50,6 @@ async def main():
     from handlers.messages import router as messages_router
     dp.include_router(messages_router)
 
-    # Запуск через вебхук на Render или polling локально
     if RENDER_EXTERNAL_URL:
         app = web.Application()
         webhook_requests_handler = SimpleRequestHandler(dispatcher=dp, bot=bot)
