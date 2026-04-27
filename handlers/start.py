@@ -9,11 +9,8 @@ from config import settings
 
 router = Router()
 
-# Приветственные фразы с юмором
 WELCOME_MESSAGES = [
     "🍸 Приветствую в баре «У Китёныша»! Я твой личный миксолог. Готов смешать настроение, даже если ты трезв как стёклышко.",
-    "🎩 Добро пожаловать! Я — бармен-виртуоз. У меня есть рецепты на все случаи жизни, включая «завтра на работу после трёх коктейлей».",
-    "🍹 О, свежая кровь! То есть, свежий гость! Присаживайся, сейчас колдовать будем.",
 ]
 
 @router.message(CommandStart())
@@ -25,14 +22,13 @@ async def cmd_start(message: types.Message):
         user = result.scalar_one_or_none()
 
         if not user:
-            # Новый гость
             referrer_id = None
-            # Проверяем, пришёл ли по реферальной ссылке
             if message.text and len(message.text.split()) > 1:
                 ref_param = message.text.split()[1]
                 if ref_param.startswith("ref") and ref_param[3:].isdigit():
                     referrer_id = int(ref_param[3:])
 
+            bot_username = (await message.bot.get_me()).username
             new_user = User(
                 telegram_id=message.from_user.id,
                 username=message.from_user.username,
@@ -40,7 +36,7 @@ async def cmd_start(message: types.Message):
                 daily_requests_count=0,
                 last_request_date=datetime.utcnow(),
                 referrer_id=referrer_id,
-                referral_link=f"https://t.me/{(await message.bot.get_me()).username}?start=ref{message.from_user.id}"
+                referral_link=f"https://t.me/{bot_username}?start=ref{message.from_user.id}"
             )
             session.add(new_user)
             await session.commit()
@@ -52,8 +48,7 @@ async def cmd_start(message: types.Message):
                 "Жми кнопку «🍹 Заказать коктейль» и поехали!"
             )
         else:
-            # Старый друг
-            user.daily_requests_count = 0  # Сбрасываем счётчик при новом заходе (для теста)
+            user.daily_requests_count = 0
             await session.commit()
             welcome_text = (
                 f"С возвращением, {user.first_name or 'друг'}!\n"
