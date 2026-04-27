@@ -44,14 +44,16 @@ async def main():
     bot = Bot(token=settings.BOT_TOKEN)
     dp = Dispatcher()
 
-    # Импорт и регистрация роутеров (добавим ниже по мере готовности)
+    # Импорт и регистрация роутеров
     from handlers.start import router as start_router
     dp.include_router(start_router)
 
     from handlers.menu import router as menu_router
     dp.include_router(menu_router)
-from handlers.messages import router as messages_router
+
+    from handlers.messages import router as messages_router
     dp.include_router(messages_router)
+
     # Запуск через вебхук на Render или polling локально
     if RENDER_EXTERNAL_URL:
         app = web.Application()
